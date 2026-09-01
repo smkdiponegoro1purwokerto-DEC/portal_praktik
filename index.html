@@ -5,236 +5,322 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lembar Pengamatan Overhaul CVT — SMK Diponegoro 1 Purwokerto</title>
   <style>
-    :root {
-      --primary-color: #1a365d;
-      --accent-color: #2b6cb0;
-      --bg-color: #f7fafc;
-      --card-bg: #ffffff;
-    }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
+      font-family: Arial, sans-serif;
+      background-color: #e2e8f0;
       margin: 0;
-      padding: 15px;
-      color: #2d3748;
+      padding: 20px;
+      color: #000;
     }
-    .container {
+    .paper {
       max-width: 800px;
       margin: 0 auto;
-      background: var(--card-bg);
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: #ffffff;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border: 1px solid #ccc;
     }
-    h2, h3 {
-      color: var(--primary-color);
-      border-bottom: 2px solid var(--accent-color);
-      padding-bottom: 8px;
+    /* Header Kop Dokumen */
+    .header-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; font-weight: bold; margin-bottom: 5px; }
-    input[type="text"], input[type="password"], textarea {
-      width: 100%; padding: 10px; border: 1px solid #cbd5e0;
-      border-radius: 6px; box-sizing: border-box; font-size: 14px;
+    .header-title h3 { margin: 2px 0; font-size: 16px; }
+    .header-title h4 { margin: 2px 0; font-size: 14px; text-transform: uppercase; }
+    .header-title p { margin: 2px 0; font-size: 11px; font-style: italic; }
+
+    /* Tabel Identitas Dokumen */
+    table.table-id {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
     }
-    .signature-pad-container {
-      border: 2px dashed #cbd5e0; border-radius: 8px;
-      background-color: #fff; text-align: center; padding: 10px;
+    table.table-id td {
+      border: 1px solid #000;
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+
+    /* Section & Isian Form */
+    .section-title {
+      font-weight: bold;
+      font-size: 13px;
+      margin-top: 15px;
+      margin-bottom: 8px;
+    }
+    .question-block {
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #a0aec0;
+      border-radius: 4px;
+      padding: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      margin-top: 4px;
+      resize: vertical;
+    }
+
+    /* Area TTD di Lembar Dokumen */
+    .ttd-container {
+      margin-top: 30px;
+      float: right;
+      width: 250px;
+      text-align: center;
+      font-size: 13px;
     }
     canvas {
-      border: 1px solid #cbd5e0; border-radius: 4px;
-      cursor: crosshair; touch-action: none; background-color: #ffffff;
+      border: 1px dashed #4a5568;
+      background-color: #fafafa;
+      margin-top: 5px;
+      cursor: crosshair;
+      touch-action: none;
     }
-    .btn {
-      background-color: var(--accent-color); color: white;
-      padding: 12px 20px; border: none; border-radius: 6px;
-      cursor: pointer; font-weight: bold; width: 100%; font-size: 16px;
+
+    /* Tombol */
+    .btn-submit {
+      background-color: #2b6cb0;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
     }
-    .btn:hover { background-color: var(--primary-color); }
-    .btn-clear { background-color: #e53e3e; margin-top: 8px; padding: 6px 14px; font-size: 13px; width: auto; }
+    .btn-submit:hover { background-color: #2c5282; }
+    .btn-clear {
+      background-color: #e53e3e;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    /* Box Login */
+    .login-box {
+      max-width: 380px;
+      margin: 50px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 16px 0;
+      box-sizing: border-box;
+      border: 1px solid #cbd5e0;
+      border-radius: 4px;
+    }
     .hidden { display: none; }
+    .clear-fix { clear: both; }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <!-- 1. HALAMAN LOGIN SISWA -->
+  <div id="loginView" class="login-box">
+    <h3 style="text-align: center; margin-top:0;">LOGIN SISWA</h3>
+    <p style="text-align: center; font-size:12px; color:#4a5568;">Lembar Pengamatan Overhaul CVT</p>
+    <form onsubmit="handleLogin(event)">
+      <label style="font-size:13px; font-weight:bold;">No. Tes / NISN:</label>
+      <input type="text" id="inputNoTes" required placeholder="Masukkan No. Tes">
+      
+      <label style="font-size:13px; font-weight:bold;">Password:</label>
+      <input type="password" id="inputPassword" required placeholder="Masukkan Password">
+      
+      <button type="submit" id="btnLogin" class="btn-submit">Masuk Sistem</button>
+    </form>
+  </div>
+
+  <!-- 2. HALAMAN TAMPILAN DOKUMEN LEMBAR PENGAMATAN -->
+  <div id="docView" class="paper hidden">
     
-    <!-- HALAMAN LOGIN SISWA -->
-    <div id="loginSection">
-      <h2>LOGIN SISWA</h2>
-      <p>Lembar Pengamatan Overhaul CVT — SMK Diponegoro 1 Purwokerto</p>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label>No. Tes / NISN:</label>
-          <input type="text" id="loginNoTes" required placeholder="Contoh: T202601">
-        </div>
-        <div class="form-group">
-          <label>Password:</label>
-          <input type="password" id="loginPassword" required placeholder="Masukkan password Anda">
-        </div>
-        <button type="submit" id="btnLogin" class="btn">Masuk Sistem</button>
-      </form>
+    <!-- Kop Header -->
+    <div class="header-title">
+      <h3>SMK DIPONEGORO 1 PURWOKERTO</h3>
+      <h4>LEMBAR PENGAMATAN PRAKTIK TEKNIK SEPEDA MOTOR</h4>
+      <p>OVERHAUL CVT (CONTINUOUSLY VARIABLE TRANSMISSION) — VERSI CHECKLIST & JAWABAN SINGKAT</p>
     </div>
 
-    <!-- FORMULIR OVERHAUL CVT -->
-    <div id="formSection" class="hidden">
-      <h2>LEMBAR PENGAMATAN OVERHAUL CVT</h2>
-      <div id="siswaInfo" style="background:#edf2f7; padding:12px; border-radius:6px; margin-bottom:15px;"></div>
+    <!-- Tabel Identitas -->
+    <table class="table-id">
+      <tr>
+        <td width="20%"><b>Nama Peserta:</b></td>
+        <td width="30%" id="lblNama">-</td>
+        <td width="20%"><b>No. Tes:</b></td>
+        <td width="30%" id="lblNoTes">-</td>
+      </tr>
+      <tr>
+        <td><b>Kelas / Sem:</b></td>
+        <td id="lblKelas">-</td>
+        <td><b>Hari / Tanggal:</b></td>
+        <td id="lblTanggal">-</td>
+      </tr>
+    </table>
 
-      <form id="cvtForm" onsubmit="handleFormSubmit(event)">
-        
-        <!-- I. K3 -->
-        <h3>I. Checklist K3 & Persiapan</h3>
-        <label><input type="checkbox" id="k3_1"> 1. Menggunakan pakaian kerja (wearpack), sepatu safety, dan kacamata pelindung.</label><br><br>
-        <label><input type="checkbox" id="k3_2"> 2. Memastikan sepeda motor dalam kondisi aman (standar tengah kokoh) dan mesin mati.</label><br><br>
-        <label><input type="checkbox" id="k3_3"> 3. Menyiapkan area kerja yang bersih, terang, serta wadah komponen.</label><br><br>
-        <label><input type="checkbox" id="k3_4"> 4. Mempersiapkan kunci sok/ring/pas, ratchet, torque wrench, dan SST pengunci pulley.</label><br><br>
-        <label><input type="checkbox" id="k3_5"> 5. Memastikan cairan pembersih, kompresor, dan kain lap siap digunakan.</label><br>
+    <!-- Form Isian Analisis -->
+    <form onsubmit="handleSubmit(event)">
+      <div class="section-title">V. ANALISIS HASIL PRAKTIK (JAWABAN SINGKAT)</div>
+      
+      <div class="question-block">
+        1. Komponen apa yang ditemukan dalam kondisi tidak sesuai/aus? Jelaskan hasil pemeriksaannya.
+        <textarea id="ans1" rows="3" required></textarea>
+      </div>
 
-        <!-- V. ANALISIS JAWABAN SINGKAT -->
-        <h3>V. Analisis Hasil Praktik</h3>
-        <div class="form-group">
-          <label>1. Komponen apa yang ditemukan dalam kondisi tidak sesuai/aus? Jelaskan hasil pemeriksaannya.</label>
-          <textarea id="ans1" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>2. Apa tindakan perawatan atau penggantian yang dilakukan? Jelaskan alasannya.</label>
-          <textarea id="ans2" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>3. Jika setelah perakitan terjadi getaran atau suara tidak normal, apa kemungkinan penyebabnya?</label>
-          <textarea id="ans3" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>4. Bagaimana cara memastikan hasil perakitan CVT sudah sesuai prosedur dan spesifikasi pabrikan?</label>
-          <textarea id="ans4" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>5. Tuliskan kesimpulan singkat hasil overhaul CVT yang telah dilakukan.</label>
-          <textarea id="ans5" rows="3" required></textarea>
-        </div>
+      <div class="question-block">
+        2. Apa tindakan perawatan atau penggantian yang dilakukan? Jelaskan alasannya.
+        <textarea id="ans2" rows="3" required></textarea>
+      </div>
 
-        <!-- TANDA TANGAN DIGITAL SISWA -->
-        <h3>Tanda Tangan Peserta Didik</h3>
-        <p style="font-size:13px; color:#4a5568;">Goreskan tanda tangan Anda secara langsung di dalam kotak di bawah ini:</p>
-        <div class="signature-pad-container">
-          <canvas id="sigCanvas" width="320" height="160"></canvas><br>
-          <button type="button" class="btn btn-clear" onclick="clearCanvas()">Hapus / Ulangi TTD</button>
-        </div>
-        <br><br>
+      <div class="question-block">
+        3. Jika setelah perakitan terjadi getaran atau suara tidak normal, apa kemungkinan penyebabnya?
+        <textarea id="ans3" rows="3" required></textarea>
+      </div>
 
-        <button type="submit" id="btnSubmit" class="btn">Kirim Lembar Pengamatan</button>
-      </form>
-    </div>
+      <div class="question-block">
+        4. Bagaimana cara memastikan hasil perakitan CVT sudah sesuai prosedur dan spesifikasi pabrikan?
+        <textarea id="ans4" rows="3" required></textarea>
+      </div>
 
+      <div class="question-block">
+        5. Tuliskan kesimpulan singkat hasil overhaul CVT yang telah dilakukan.
+        <textarea id="ans5" rows="3" required></textarea>
+      </div>
+
+      <!-- Kolom TTD Siswa di Atas Dokumen -->
+      <div class="ttd-container">
+        Purwokerto, <span id="lblTglTTD"></span><br>
+        Peserta Didik,<br>
+        <canvas id="canvasTTD" width="220" height="110"></canvas><br>
+        <button type="button" class="btn-clear" onclick="resetTTD()">Hapus TTD</button><br><br>
+        <b><span id="lblNamaTTD">(.......................)</span></b>
+      </div>
+      <div class="clear-fix"></div>
+
+      <button type="submit" id="btnSubmit" class="btn-submit">Kirim & Simpan Lembar Pengamatan</button>
+    </form>
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMxGZiYJuzbUeto5VaCLSTh_hb-UeSsi7q3-_TRQd-AW-oQYFARxP8_4DmOFIOsEQOkA/exec";
+    // URL WEB APP APPS SCRIPT TERBARU
+    const API_URL = "https://script.google.com/macros/s/AKfycbwMsCqOyez6EaiUT4h2sTmV2PgeClX9KomS9_ufq_Nar_iYARuiefJCdKr9qMZD53vtbA/exec";
 
-    let activeSiswa = null;
-    let canvas, ctx, isDrawing = false;
+    let currentSiswa = null;
+    let canvas, ctx, drawing = false;
 
+    // Login Function
     async function handleLogin(e) {
       e.preventDefault();
       const btn = document.getElementById('btnLogin');
       btn.disabled = true;
       btn.innerText = "Memeriksa...";
 
-      const payload = {
-        action: "login",
-        noTes: document.getElementById('loginNoTes').value,
-        password: document.getElementById('loginPassword').value
-      };
+      const noTes = document.getElementById('inputNoTes').value;
+      const password = document.getElementById('inputPassword').value;
 
       try {
-        const res = await fetch(SCRIPT_URL, {
+        const res = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ action: "login", noTes: noTes, password: password })
         }).then(r => r.json());
 
         if (res.success) {
-          activeSiswa = res.siswa;
-          document.getElementById('loginSection').classList.add('hidden');
-          document.getElementById('formSection').classList.remove('hidden');
-          document.getElementById('siswaInfo').innerHTML = 
-            `<b>Nama:</b> ${activeSiswa.nama} | <b>No. Tes:</b> ${activeSiswa.noTes} | <b>Kelas:</b> ${activeSiswa.kelas}`;
-          initCanvas();
+          currentSiswa = res.siswa;
+          showDocumentView();
         } else {
           alert(res.message);
         }
-      } catch(err) {
-        alert("Gagal koneksi ke server: " + err.message);
+      } catch (err) {
+        alert("Gagal terhubung: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerText = "Masuk Sistem";
       }
     }
 
-    function initCanvas() {
-      canvas = document.getElementById('sigCanvas');
-      ctx = canvas.getContext('2d');
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = "#000000";
+    // Tampilkan Tampilan Dokumen Fisik
+    function showDocumentView() {
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('docView').classList.remove('hidden');
 
-      canvas.addEventListener('mousedown', startDrawing);
-      canvas.addEventListener('mousemove', draw);
-      canvas.addEventListener('mouseup', stopDrawing);
+      const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('lblNama').innerText = currentSiswa.nama;
+      document.getElementById('lblNoTes').innerText = currentSiswa.noTes;
+      document.getElementById('lblKelas').innerText = currentSiswa.kelas;
+      document.getElementById('lblTanggal').innerText = today;
+      document.getElementById('lblTglTTD').innerText = today;
+      document.getElementById('lblNamaTTD').innerText = currentSiswa.nama;
 
-      canvas.addEventListener('touchstart', (e) => { startDrawing(e.touches[0]); e.preventDefault(); });
-      canvas.addEventListener('touchmove', (e) => { draw(e.touches[0]); e.preventDefault(); });
-      canvas.addEventListener('touchend', stopDrawing);
+      initCanvas();
     }
 
-    function startDrawing(e) {
-      isDrawing = true;
+    // Inisialisasi Canvas TTD
+    function initCanvas() {
+      canvas = document.getElementById('canvasTTD');
+      ctx = canvas.getContext('2d');
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#000000";
+
+      canvas.addEventListener('mousedown', sDraw);
+      canvas.addEventListener('mousemove', mDraw);
+      canvas.addEventListener('mouseup', eDraw);
+
+      canvas.addEventListener('touchstart', (e) => { sDraw(e.touches[0]); e.preventDefault(); });
+      canvas.addEventListener('touchmove', (e) => { mDraw(e.touches[0]); e.preventDefault(); });
+      canvas.addEventListener('touchend', eDraw);
+    }
+
+    function sDraw(e) {
+      drawing = true;
       const rect = canvas.getBoundingClientRect();
       ctx.beginPath();
       ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
     }
-
-    function draw(e) {
-      if (!isDrawing) return;
+    function mDraw(e) {
+      if (!drawing) return;
       const rect = canvas.getBoundingClientRect();
       ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
       ctx.stroke();
     }
+    function eDraw() { drawing = false; }
+    function resetTTD() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
-    function stopDrawing() { isDrawing = false; }
-    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-    async function handleFormSubmit(e) {
+    // Submit Function
+    async function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
-      btn.innerText = "Sedang Mengirim...";
+      btn.innerText = "Menyimpan ke Spreadsheet...";
 
-      const ttdBase64 = canvas.toDataURL("image/png");
-      
       const payload = {
-        action: "submitForm",
-        formData: {
-          noTes: activeSiswa.noTes,
-          nama: activeSiswa.nama,
-          kelas: activeSiswa.kelas,
-          k3: [
-            document.getElementById('k3_1').checked,
-            document.getElementById('k3_2').checked,
-            document.getElementById('k3_3').checked,
-            document.getElementById('k3_4').checked,
-            document.getElementById('k3_5').checked
-          ],
+        action: "submit",
+        payload: {
+          noTes: currentSiswa.noTes,
+          nama: currentSiswa.nama,
+          kelas: currentSiswa.kelas,
           ans1: document.getElementById('ans1').value,
           ans2: document.getElementById('ans2').value,
           ans3: document.getElementById('ans3').value,
           ans4: document.getElementById('ans4').value,
           ans5: document.getElementById('ans5').value,
-          ttdBase64: ttdBase64
+          ttdBase64: canvas.toDataURL("image/png")
         }
       };
 
       try {
-        const res = await fetch(SCRIPT_URL, {
+        const res = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
@@ -242,11 +328,11 @@
 
         alert(res.message);
         if (res.success) location.reload();
-      } catch(err) {
-        alert("Gagal mengunggah data: " + err.message);
+      } catch (err) {
+        alert("Gagal menyimpan data: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerText = "Kirim Lembar Pengamatan";
+        btn.innerText = "Kirim & Simpan Lembar Pengamatan";
       }
     }
   </script>
