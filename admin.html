@@ -47,8 +47,33 @@
     .btn:hover { background-color: #1d4ed8; }
     .btn-secondary { background-color: #64748b; }
     .btn-secondary:hover { background-color: #475569; }
+    .btn-danger { background-color: #dc2626; }
+    .btn-danger:hover { background-color: #b91c1c; }
     .btn-print { background-color: #059669; }
     .btn-print:hover { background-color: #047857; }
+
+    /* BOX LOGIN GURU */
+    .login-box {
+      max-width: 380px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .login-box h3 { margin-top: 0; color: #1e293b; text-align: center; }
+    .login-box label { font-size: 13px; font-weight: bold; display: block; margin-top: 12px; }
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .hidden { display: none !important; }
 
     table.data-table {
       width: 100%;
@@ -64,7 +89,7 @@
     table.data-table th { background-color: #f8fafc; font-weight: bold; }
     table.data-table tr:hover { background-color: #f1f5f9; }
 
-    /* LAYOUT MODAL */
+    /* MODAL CETAK */
     .print-modal {
       display: none;
       position: fixed;
@@ -82,54 +107,22 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
     
-    /* STYLE CETAK MEDIA PRINT */
     @media print {
-      @page {
-        size: A4 portrait;
-        margin: 12mm 15mm 12mm 15mm;
-      }
-      body {
-        background: #fff !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-      body * {
-        visibility: hidden;
-      }
-      .print-modal, .print-modal * {
-        visibility: visible;
-      }
+      @page { size: A4 portrait; margin: 12mm 15mm 12mm 15mm; }
+      body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+      body * { visibility: hidden; }
+      .print-modal, .print-modal * { visibility: visible; }
       .print-modal {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-        overflow: visible !important;
-        background: none !important;
-        display: block !important;
+        position: absolute !important; left: 0 !important; top: 0 !important;
+        width: 100% !important; height: auto !important; overflow: visible !important;
+        background: none !important; display: block !important;
       }
-      .print-paper {
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-      .page-break {
-        page-break-before: always !important;
-        break-before: page !important;
-      }
-      .avoid-break {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-      }
+      .print-paper { box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
+      .no-print { display: none !important; }
+      .page-break { page-break-before: always !important; break-before: page !important; }
+      .avoid-break { page-break-inside: avoid !important; break-inside: avoid !important; }
     }
 
-    /* KOP DOKUMEN CETAK */
     .header-title { text-align: center; font-weight: bold; margin-bottom: 12px; }
     .header-title h3 { margin: 2px 0; font-size: 15px; }
     .header-title h4 { margin: 2px 0; font-size: 13px; text-transform: uppercase; }
@@ -148,12 +141,31 @@
 </head>
 <body>
 
-  <div class="container">
+  <!-- 1. HALAMAN LOGIN GURU -->
+  <div id="loginGuruBox" class="login-box">
+    <h3>LOGIN PENGAWAS / GURU</h3>
+    <p style="text-align: center; font-size:12px; color:#64748b; margin-top:-5px;">SMK Diponegoro 1 Purwokerto</p>
+    <form onsubmit="handleGuruLogin(event)">
+      <label>Username:</label>
+      <input type="text" id="guruUser" required placeholder="Masukkan username admin">
+      
+      <label>Password:</label>
+      <input type="password" id="guruPass" required placeholder="Masukkan password">
+      
+      <button type="submit" id="btnLoginGuru" class="btn" style="width: 100%; margin-top: 20px; padding: 12px;">Masuk Portal Pengawasan</button>
+    </form>
+  </div>
+
+  <!-- 2. HALAMAN UTAMA ADMIN PENGAWASAN -->
+  <div id="adminPanel" class="container hidden">
     <div class="top-bar">
-      <h2>PORTAL PENGAWASAN & CETAK LAPORAN CVT</h2>
       <div>
-        <a href="index.html" target="_blank" class="btn btn-secondary">🌐 Buka Form Siswa</a>
+        <h2 style="border:none; margin:0; padding:0;">PORTAL PENGAWASAN & CETAK LAPORAN CVT</h2>
+        <span style="font-size:13px; color:#2563eb;" id="greetingGuru">Selamat Datang, Admin</span>
+      </div>
+      <div>
         <button onclick="loadData()" class="btn">🔄 Refresh Data</button>
+        <button onclick="handleLogout()" class="btn btn-danger">🚪 Keluar (Logout)</button>
       </div>
     </div>
 
@@ -178,7 +190,7 @@
     </table>
   </div>
 
-  <!-- MODAL PREVIEW & PRATINJAU DOKUMEN CETAK -->
+  <!-- MODAL PRATINJAU DOKUMEN CETAK -->
   <div id="printModal" class="print-modal">
     <div class="no-print" style="max-width: 800px; margin: 15px auto 0 auto; text-align: right;">
       <button onclick="window.print()" class="btn btn-print">🖨️ Cetak Dokumen (PDF / Print)</button>
@@ -186,7 +198,7 @@
     </div>
 
     <div id="printArea" class="print-paper">
-      <!-- Isi dokumen fisik dirender dinamis di sini -->
+      <!-- Content Cetak -->
     </div>
   </div>
 
@@ -194,6 +206,57 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbwMsCqOyez6EaiUT4h2sTmV2PgeClX9KomS9_ufq_Nar_iYARuiefJCdKr9qMZD53vtbA/exec";
     let responDataList = [];
     const defaultTitle = "Portal Pengawasan & Cetak Laporan CVT — Guru";
+
+    // PERIKSA STATUS LOGIN SAAT HALAMAN DIBUKA
+    window.addEventListener('DOMContentLoaded', () => {
+      const activeGuru = sessionStorage.getItem('guru_session');
+      if (activeGuru) {
+        showAdminPanel(JSON.parse(activeGuru));
+      }
+    });
+
+    // PROSES LOGIN GURU
+    async function handleGuruLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnLoginGuru');
+      btn.disabled = true;
+      btn.innerText = "Memeriksa Akun...";
+
+      const u = document.getElementById('guruUser').value;
+      const p = document.getElementById('guruPass').value;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "loginGuru", username: u, password: p })
+        }).then(r => r.json());
+
+        if (res.success) {
+          sessionStorage.setItem('guru_session', JSON.stringify(res.guru));
+          showAdminPanel(res.guru);
+        } else {
+          alert(res.message);
+        }
+      } catch (err) {
+        alert("Gagal koneksi server: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Masuk Portal Pengawasan";
+      }
+    }
+
+    function showAdminPanel(guru) {
+      document.getElementById('loginGuruBox').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+      document.getElementById('greetingGuru').innerText = `Pengawas Aktif: ${guru.nama}`;
+      loadData();
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('guru_session');
+      location.reload();
+    }
 
     async function loadData() {
       const tbody = document.getElementById('tableBody');
@@ -233,8 +296,6 @@
 
     function previewCetak(index) {
       const d = responDataList[index];
-      
-      // UBAH JUDUL DOKUMEN OTOMATIS SESUAI NAMA SISWA SAAT PRATINJAU/PRINT
       document.title = `Lembar Pengamatan CVT — ${d.nama} (${d.noTes})`;
 
       const tglFormatted = new Date(d.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -372,12 +433,9 @@
     }
 
     function closeModal() {
-      // KEMBALIKAN JUDUL HALAMAN KE SEMULA SAAT MODAL DITUTUP
       document.title = defaultTitle;
       document.getElementById('printModal').style.display = 'none';
     }
-
-    loadData();
   </script>
 </body>
 </html>
