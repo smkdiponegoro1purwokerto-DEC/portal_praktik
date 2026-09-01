@@ -64,7 +64,7 @@
     table.data-table th { background-color: #f8fafc; font-weight: bold; }
     table.data-table tr:hover { background-color: #f1f5f9; }
 
-    /* LAYOUT CETAK DOKUMEN */
+    /* LAYOUT MODAL DIMATIKAN SAAT PRINT SCRIPT DIBUKA */
     .print-modal {
       display: none;
       position: fixed;
@@ -82,29 +82,68 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
     
-    /* STYLE MEDIA PRINT (UNTUK KERTAS A4/F4) */
+    /* STYLE CETAK MEDIA PRINT PERBAIKAN (MENDUKUNG MULTI-PAGE A4) */
     @media print {
-      body * { visibility: hidden; }
-      .print-modal, .print-paper, .print-paper * { visibility: visible; }
-      .print-modal { position: absolute; left: 0; top: 0; width: 100%; background: none; }
-      .print-paper { box-shadow: none; padding: 0; margin: 0; width: 100%; }
-      .no-print { display: none !important; }
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm 12mm 15mm;
+      }
+      body {
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      body * {
+        visibility: hidden;
+      }
+      .print-modal, .print-modal * {
+        visibility: visible;
+      }
+      .print-modal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        background: none !important;
+        display: block !important;
+      }
+      .print-paper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      /* Mengatur Pindahnya Halaman (Page Break) */
+      .page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+      }
+      .avoid-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
     }
 
     /* KOP DOKUMEN CETAK */
-    .header-title { text-align: center; font-weight: bold; margin-bottom: 15px; }
-    .header-title h3 { margin: 2px 0; font-size: 16px; }
-    .header-title h4 { margin: 2px 0; font-size: 14px; text-transform: uppercase; }
-    .header-title p { margin: 2px 0; font-size: 11px; font-style: italic; }
+    .header-title { text-align: center; font-weight: bold; margin-bottom: 12px; }
+    .header-title h3 { margin: 2px 0; font-size: 15px; }
+    .header-title h4 { margin: 2px 0; font-size: 13px; text-transform: uppercase; }
+    .header-title p { margin: 2px 0; font-size: 10px; font-style: italic; }
 
-    table.table-doc { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-    table.table-doc th, table.table-doc td { border: 1px solid #000; padding: 5px 7px; font-size: 11px; vertical-align: middle; }
+    table.table-doc { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+    table.table-doc th, table.table-doc td { border: 1px solid #000; padding: 4px 6px; font-size: 10.5px; vertical-align: middle; }
     table.table-doc th { background-color: #f1f5f9; text-align: center; }
     .text-center { text-align: center; }
-    .section-title { font-weight: bold; font-size: 12px; margin-top: 15px; margin-bottom: 5px; }
-    .question-block { margin-bottom: 10px; font-size: 11px; }
-    .ans-box { border: 1px solid #000; padding: 6px; font-size: 11px; background: #fafafa; min-height: 35px; margin-top: 3px; }
-    .ttd-container { margin-top: 20px; float: right; width: 220px; text-align: center; font-size: 11px; }
+    .section-title { font-weight: bold; font-size: 11.5px; margin-top: 12px; margin-bottom: 4px; }
+    .question-block { margin-bottom: 8px; font-size: 10.5px; page-break-inside: avoid; }
+    .ans-box { border: 1px solid #000; padding: 5px; font-size: 10.5px; background: #fafafa; min-height: 28px; margin-top: 2px; }
+    .ttd-container { margin-top: 15px; float: right; width: 220px; text-align: center; font-size: 10.5px; page-break-inside: avoid; }
     .clear-fix { clear: both; }
   </style>
 </head>
@@ -156,7 +195,6 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbwMsCqOyez6EaiUT4h2sTmV2PgeClX9KomS9_ufq_Nar_iYARuiefJCdKr9qMZD53vtbA/exec";
     let responDataList = [];
 
-    // Load Data Laporan Masuk
     async function loadData() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Memuat data terbaru...</td></tr>`;
@@ -193,7 +231,6 @@
       }
     }
 
-    // Tampilkan Pratinjau Dokumen Cetak Fisik
     function previewCetak(index) {
       const d = responDataList[index];
       const tglFormatted = new Date(d.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -213,6 +250,7 @@
       ];
 
       const html = `
+        <!-- HALAMAN 1 -->
         <div class="header-title">
           <h3>SMK DIPONEGORO 1 PURWOKERTO</h3>
           <h4>LEMBAR PENGAMATAN PRAKTIK TEKNIK SEPEDA MOTOR</h4>
@@ -292,7 +330,10 @@
           </tbody>
         </table>
 
-        <div class="section-title">IV. CHECKLIST PROSEDUR KERJA OVERHAUL CVT</div>
+        <!-- HALAMAN 2 (PINDAH OTOMATIS) -->
+        <div class="page-break"></div>
+
+        <div class="section-title" style="margin-top:0;">IV. CHECKLIST PROSEDUR KERJA OVERHAUL CVT</div>
         <table class="table-doc">
           <thead>
             <tr><th width="6%">No</th><th>Langkah Prosedur Kerja</th><th width="10%">Ya</th><th width="10%">Tidak</th></tr>
@@ -316,10 +357,10 @@
         <div class="question-block">4. Cara memastikan kesesuaian prosedur:<div class="ans-box">${d.ans4}</div></div>
         <div class="question-block">5. Kesimpulan overhaul CVT:<div class="ans-box">${d.ans5}</div></div>
 
-        <div class="ttd-container">
+        <div class="ttd-container avoid-break">
           Purwokerto, ${tglFormatted}<br>
           Peserta Didik,<br>
-          <img src="${d.ttdBase64}" style="width:130px; height:65px; margin:5px 0;"><br>
+          <img src="${d.ttdBase64}" style="width:120px; height:60px; margin:4px 0;"><br>
           <b>(${d.nama})</b>
         </div>
         <div class="clear-fix"></div>
@@ -333,7 +374,6 @@
       document.getElementById('printModal').style.display = 'none';
     }
 
-    // Auto-load data saat pertama dibuka
     loadData();
   </script>
 </body>
