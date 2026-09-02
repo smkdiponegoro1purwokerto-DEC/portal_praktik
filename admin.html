@@ -30,7 +30,29 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+    }
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: #f8fafc;
+      padding: 12px 15px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 15px;
+    }
+    .filter-bar label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #334155;
+    }
+    .filter-bar input[type="date"] {
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
     }
     .btn {
       background-color: #2563eb;
@@ -75,7 +97,6 @@
       font-size: 14px;
     }
 
-    /* FITUR LIHAT PASSWORD */
     .show-password-opt {
       display: flex;
       align-items: center;
@@ -169,7 +190,6 @@
       <label>Password:</label>
       <input type="password" id="guruPass" required placeholder="Masukkan password">
       
-      <!-- CHECKBOX LIHAT PASSWORD -->
       <div class="show-password-opt">
         <input type="checkbox" id="togglePassword" onclick="togglePassView()">
         <label for="togglePassword" style="margin-top:0; font-weight:normal; cursor:pointer;">Lihat Password</label>
@@ -192,7 +212,14 @@
       </div>
     </div>
 
-    <p style="font-size:13px; color:#64748b;">Daftar siswa yang sudah menyelesaikan dan mengirimkan lembar pengamatan Overhaul CVT:</p>
+    <!-- FITUR FILTER TANGGAL -->
+    <div class="filter-bar">
+      <label for="filterDate">📅 Filter Tanggal Pengiriman:</label>
+      <input type="date" id="filterDate" onchange="renderFilteredData()">
+      <button onclick="resetDateFilter()" class="btn btn-secondary" style="padding:6px 12px; font-size:12px;">Tampilkan Semua</button>
+    </div>
+
+    <p style="font-size:13px; color:#64748b;">Daftar siswa yang menyelesaikan lembar pengamatan Overhaul CVT pada tanggal terpilih:</p>
 
     <table class="data-table">
       <thead>
@@ -228,27 +255,25 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwMsCqOyez6EaiUT4h2sTmV2PgeClX9KomS9_ufq_Nar_iYARuiefJCdKr9qMZD53vtbA/exec";
     let responDataList = [];
+    let currentFilteredList = [];
     const defaultTitle = "Portal Pengawasan & Cetak Laporan CVT — Guru";
 
-    // FUNGSI UNTUK TOGGLE LIHAT PASSWORD
     function togglePassView() {
       const passInput = document.getElementById("guruPass");
-      if (passInput.type === "password") {
-        passInput.type = "text";
-      } else {
-        passInput.type = "password";
-      }
+      passInput.type = passInput.type === "password" ? "text" : "password";
     }
 
-    // PERIKSA STATUS LOGIN SAAT HALAMAN DIBUKA
     window.addEventListener('DOMContentLoaded', () => {
+      // Set input tanggal otomatis ke hari ini (Format YYYY-MM-DD)
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('filterDate').value = todayStr;
+
       const activeGuru = sessionStorage.getItem('guru_session');
       if (activeGuru) {
         showAdminPanel(JSON.parse(activeGuru));
       }
     });
 
-    // PROSES LOGIN GURU
     async function handleGuruLogin(e) {
       e.preventDefault();
       const btn = document.getElementById('btnLoginGuru');
@@ -304,21 +329,7 @@
 
         if (res.success && res.data.length > 0) {
           responDataList = res.data;
-          tbody.innerHTML = res.data.map((item, index) => {
-            const tgl = new Date(item.timestamp).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-            return `
-              <tr>
-                <td style="text-align:center;">${index + 1}</td>
-                <td>${tgl}</td>
-                <td><b>${item.noTes}</b></td>
-                <td>${item.nama}</td>
-                <td>${item.kelas}</td>
-                <td style="text-align:center;">
-                  <button onclick="previewCetak(${index})" class="btn btn-print" style="padding: 5px 10px; font-size: 12px;">🖨️ Pratinjau & Cetak</button>
-                </td>
-              </tr>
-            `;
-          }).join('');
+          renderFilteredData();
         } else {
           tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada data pengiriman lembar pengamatan.</td></tr>`;
         }
@@ -327,8 +338,61 @@
       }
     }
 
-    function previewCetak(index) {
-      const d = responDataList[index];
+    // FUNGSI RENDER TABEL SESUAI FILTER TANGGAL
+    function renderFilteredData() {
+      const tbody = document.getElementById('tableBody');
+      const selectedDate = document.getElementById('filterDate').value;
+
+      if (!responDataList || responDataList.length === 0) return;
+
+      if (selectedDate) {
+        currentFilteredList = responDataList.filter(item => {
+          const itemDate = new Date(item.timestamp);
+          // Format YYYY-MM-DD lokal
+          const year = itemDate.getFullYear();
+          const month = String(itemDate.getMonth() + 1).padStart(2, '0');
+          const day = String(itemDate.getDate()).padStart(2, '0');
+          const itemDateStr = `${year}-${month}-${day}`;
+          
+          return itemDateStr === selectedDate;
+        });
+      } else {
+        currentFilteredList = [...responDataList];
+      }
+
+      if (currentFilteredList.length > 0) {
+        tbody.innerHTML = currentFilteredList.map((item, index) => {
+          const tgl = new Date(item.timestamp).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+          return `
+            <tr>
+              <td style="text-align:center;">${index + 1}</td>
+              <td>${tgl}</td>
+              <td><b>${item.noTes}</b></td>
+              <td>${item.nama}</td>
+              <td>${item.kelas}</td>
+              <td style="text-align:center;">
+                <button onclick="previewCetak(${index})" class="btn btn-print" style="padding: 5px 10px; font-size: 12px;">🖨️ Pratinjau & Cetak</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">Tidak ada data laporan siswa pada tanggal ${selectedDate ? formatDateIndo(selectedDate) : ''}.</td></tr>`;
+      }
+    }
+
+    function resetDateFilter() {
+      document.getElementById('filterDate').value = "";
+      renderFilteredData();
+    }
+
+    function formatDateIndo(dateStr) {
+      const p = dateStr.split('-');
+      return `${p[2]}/${p[1]}/${p[0]}`;
+    }
+
+    function previewCetak(filteredIndex) {
+      const d = currentFilteredList[filteredIndex];
       document.title = `Lembar Pengamatan CVT — ${d.nama} (${d.noTes})`;
 
       const tglFormatted = new Date(d.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
