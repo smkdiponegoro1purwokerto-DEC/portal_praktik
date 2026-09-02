@@ -64,7 +64,8 @@
     }
     .login-box h3 { margin-top: 0; color: #1e293b; text-align: center; }
     .login-box label { font-size: 13px; font-weight: bold; display: block; margin-top: 12px; }
-    .login-box input {
+    .login-box input[type="text"], 
+    .login-box input[type="password"] {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -73,6 +74,22 @@
       border-radius: 4px;
       font-size: 14px;
     }
+
+    /* FITUR LIHAT PASSWORD */
+    .show-password-opt {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #475569;
+      cursor: pointer;
+      user-select: none;
+    }
+    .show-password-opt input[type="checkbox"] {
+      margin-right: 6px;
+      cursor: pointer;
+    }
+
     .hidden { display: none !important; }
 
     table.data-table {
@@ -152,6 +169,12 @@
       <label>Password:</label>
       <input type="password" id="guruPass" required placeholder="Masukkan password">
       
+      <!-- CHECKBOX LIHAT PASSWORD -->
+      <div class="show-password-opt">
+        <input type="checkbox" id="togglePassword" onclick="togglePassView()">
+        <label for="togglePassword" style="margin-top:0; font-weight:normal; cursor:pointer;">Lihat Password</label>
+      </div>
+      
       <button type="submit" id="btnLoginGuru" class="btn" style="width: 100%; margin-top: 20px; padding: 12px;">Masuk Portal Pengawasan</button>
     </form>
   </div>
@@ -206,6 +229,16 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbwMsCqOyez6EaiUT4h2sTmV2PgeClX9KomS9_ufq_Nar_iYARuiefJCdKr9qMZD53vtbA/exec";
     let responDataList = [];
     const defaultTitle = "Portal Pengawasan & Cetak Laporan CVT — Guru";
+
+    // FUNGSI UNTUK TOGGLE LIHAT PASSWORD
+    function togglePassView() {
+      const passInput = document.getElementById("guruPass");
+      if (passInput.type === "password") {
+        passInput.type = "text";
+      } else {
+        passInput.type = "password";
+      }
+    }
 
     // PERIKSA STATUS LOGIN SAAT HALAMAN DIBUKA
     window.addEventListener('DOMContentLoaded', () => {
