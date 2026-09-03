@@ -3,522 +3,438 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lembar Pengamatan Overhaul CVT</title>
+  <title>DIPSA EXAM CENTER - Panel Pengawas Ujian</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e2e8f0;
-      margin: 0;
-      padding: 20px;
-      color: #000;
-    }
-    .paper {
-      max-width: 850px;
-      margin: 0 auto;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; padding: 20px; }
+    
+    .container { max-width: 1280px; margin: 0 auto; }
+    
+    .header {
       background: #ffffff;
-      padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      border: 1px solid #ccc;
-    }
-    .header-title {
-      text-align: center;
-      font-weight: bold;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
     }
-    .header-title h3 { margin: 2px 0; font-size: 16px; }
-    .header-title h4 { margin: 2px 0; font-size: 14px; text-transform: uppercase; }
-    .header-title p { margin: 2px 0; font-size: 11px; font-style: italic; }
-
-    table.table-doc {
-      width: 100%;
-      border-collapse: collapse;
+    .header h2 { color: #1a73e8; font-size: 22px; }
+    .header p { color: #666; font-size: 13px; margin-top: 4px; }
+    
+    .filter-card {
+      background: #ffffff;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      align-items: end;
     }
-    table.table-doc th, table.table-doc td {
-      border: 1px solid #000;
-      padding: 6px 8px;
-      font-size: 12px;
-      vertical-align: middle;
-    }
-    table.table-doc th {
-      background-color: #f1f5f9;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .section-title {
-      font-weight: bold;
-      font-size: 13px;
-      margin-top: 20px;
-      margin-bottom: 8px;
-    }
-    .question-block {
-      margin-bottom: 12px;
-      font-size: 13px;
-    }
-    textarea, input[type="text"] {
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #a0aec0;
-      border-radius: 4px;
-      padding: 6px;
-      font-family: inherit;
-      font-size: 12px;
-    }
-
-    .ttd-container {
-      margin-top: 30px;
-      float: right;
-      width: 250px;
-      text-align: center;
-      font-size: 13px;
-    }
-    canvas {
-      border: 1px dashed #4a5568;
-      background-color: #fafafa;
-      margin-top: 5px;
-      cursor: crosshair;
-      touch-action: none;
-    }
-
-    .btn-submit {
-      background-color: #2b6cb0;
+    .form-group label { display: block; font-size: 12px; font-weight: bold; color: #555; margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
+    .form-control:focus { border-color: #1a73e8; }
+    
+    .btn-refresh {
+      background: #1a73e8;
       color: white;
       border: none;
-      padding: 12px 24px;
-      font-size: 15px;
+      padding: 10px 18px;
+      border-radius: 6px;
       font-weight: bold;
-      border-radius: 4px;
       cursor: pointer;
+      transition: 0.2s;
+      font-size: 14px;
+      height: 40px;
       width: 100%;
-      margin-top: 20px;
     }
-    .btn-submit:hover { background-color: #2c5282; }
-    .btn-clear {
-      background-color: #e53e3e;
+    .btn-refresh:hover { background: #1557b0; }
+    .btn-refresh:disabled { background: #a5c7f9; cursor: not-allowed; }
+    
+    /* TOMBOL KHUSUS MENU GURU & PRAKTIK */
+    .btn-guru {
+      background: #28a745;
       color: white;
       border: none;
-      padding: 4px 8px;
-      font-size: 11px;
-      border-radius: 3px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
+      transition: 0.2s;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+    .btn-guru:hover { background: #218838; }
 
-    .login-box {
-      max-width: 380px;
-      margin: 50px auto;
+    .btn-praktik {
+      background: #fd7e14;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-praktik:hover { background: #e8590c; }
+
+    .stats-bar {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
       background: white;
-      padding: 25px;
+      padding: 15px 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      flex: 1;
+      min-width: 150px;
+      border-left: 4px solid #1a73e8;
     }
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0 16px 0;
-      box-sizing: border-box;
-      border: 1px solid #cbd5e0;
+    .stat-card h3 { font-size: 20px; color: #1a73e8; }
+    .stat-card p { font-size: 12px; color: #666; }
+
+    .table-responsive {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+    th { background: #f8fafc; color: #475569; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-weight: 600; }
+    td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; }
+    tr:hover { background: #f8fafc; }
+    
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .badge-tingkat {
+      display: inline-block;
+      padding: 3px 8px;
       border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      color: white;
     }
-    .hidden { display: none; }
-    .clear-fix { clear: both; }
-    .text-center { text-align: center; }
+    .badge-x { background: #0284c7; }
+    .badge-xi { background: #7c3aed; }
+    .badge-x-ink { background: #059669; }
+    .badge-xi-ink { background: #d97706; }
+
+    /* STYLING BADGE KAMERA */
+    .badge-kamera-on {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    .badge-kamera-off {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+    
+    .loading-info { text-align: center; padding: 30px; font-weight: bold; color: #1a73e8; }
+    .empty-info { text-align: center; padding: 30px; color: #888; }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginView" class="login-box">
-    <h3 style="text-align: center; margin-top:0;">LOGIN SISWA</h3>
-    <p style="text-align: center; font-size:12px; color:#4a5568;">Lembar Pengamatan Overhaul CVT</p>
-    <form onsubmit="handleLogin(event)">
-      <label style="font-size:13px; font-weight:bold;">No. Tes / NISN:</label>
-      <input type="text" id="inputNoTes" required placeholder="Masukkan No. Tes">
-      
-      <label style="font-size:13px; font-weight:bold;">Password:</label>
-      <input type="password" id="inputPassword" required placeholder="Masukkan Password">
-      
-      <button type="submit" id="btnLogin" class="btn-submit">Masuk Sistem</button>
-    </form>
-  </div>
-
-  <!-- DOKUMEN -->
-  <div id="docView" class="paper hidden">
-    
-    <div class="header-title">
-      <h3>SMK DIPONEGORO 1 PURWOKERTO</h3>
-      <h4>LEMBAR PENGAMATAN PRAKTIK TEKNIK SEPEDA MOTOR</h4>
-      <p>OVERHAUL CVT (CONTINUOUSLY VARIABLE TRANSMISSION) — VERSI CHECKLIST & JAWABAN SINGKAT</p>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h2>DIPSA EXAM CENTER</h2>
+        <p>Panel Monitoring Pengawas Ruang (Kelas X, XI & Inklusi)</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <span id="last-update" style="font-size: 12px; color: #666; margin-right: 5px;">Terakhir Diperbarui: -</span>
+        <button class="btn-guru" onclick="window.location.href='rekap_nilai_guru.html'">
+          📊 Rekap Nilai Guru
+        </button>
+        <button class="btn-praktik" onclick="window.location.href='https://smkdiponegoro1purwokerto-dec.github.io/portal_praktik/admin.html'">
+          🛠️ Admin Praktik
+        </button>
+      </div>
     </div>
 
-    <!-- IDENTITAS -->
-    <table class="table-doc">
-      <tr>
-        <td width="18%"><b>Nama Peserta:</b></td>
-        <td width="32%" id="lblNama">-</td>
-        <td width="18%"><b>No. Tes:</b></td>
-        <td width="32%" id="lblNoTes">-</td>
-      </tr>
-      <tr>
-        <td><b>Kelas / Sem:</b></td>
-        <td id="lblKelas">-</td>
-        <td><b>Hari / Tanggal:</b></td>
-        <td id="lblTanggal">-</td>
-      </tr>
-    </table>
+    <!-- FILTER RUANG, TANGGAL & JAM MULAI SESI -->
+    <div class="filter-card">
+      <div class="form-group">
+        <label>Tingkat Kelas</label>
+        <select id="filter-tingkat" class="form-control">
+          <option value="SEMUA">Semua Kategori</option>
+          <option value="X">Kelas X Reguler</option>
+          <option value="XI">Kelas XI Reguler</option>
+          <option value="X_INK">Kelas X Inklusi</option>
+          <option value="XI_INK">Kelas XI Inklusi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ruang Ujian</label>
+        <select id="filter-ruang" class="form-control">
+          <option value="SEMUA">Semua Ruang</option>
+          <option value="Ruang 1">Ruang 1</option>
+          <option value="Ruang 2">Ruang 2</option>
+          <option value="Ruang 3">Ruang 3</option>
+          <option value="Ruang 4">Ruang 4</option>
+          <option value="Ruang 5">Ruang 5</option>
+          <option value="Lab DKV">Lab DKV</option>
+          <option value="Lab TSM">Lab TSM</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tanggal Ujian</label>
+        <input type="date" id="filter-tanggal" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Jam Mulai Sesi Ujian (Opsional)</label>
+        <input type="time" id="filter-waktu" class="form-control">
+      </div>
+      <div>
+        <button class="btn-refresh" id="btn-refresh-data" onclick="muatDataMonitoring()">🔄 Refresh Data</button>
+      </div>
+    </div>
 
-    <form onsubmit="handleSubmit(event)">
+    <!-- STATISTIK RINGKAS -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <h3 id="stat-total">0</h3>
+        <p>Total Siswa Akses Token</p>
+      </div>
+      <div class="stat-card" style="border-left-color: #0284c7;">
+        <h3 id="stat-kelas-x" style="color: #0284c7;">0</h3>
+        <p>Kelas X Reguler</p>
+      </div>
+      <div class="stat-card" style="border-left-color: #7c3aed;">
+        <h3 id="stat-kelas-xi" style="color: #7c3aed;">0</h3>
+        <p>Kelas XI Reguler</p>
+      </div>
+      <div class="stat-card" style="border-left-color: #059669;">
+        <h3 id="stat-kelas-x-ink" style="color: #059669;">0</h3>
+        <p>Kelas X Inklusi</p>
+      </div>
+      <div class="stat-card" style="border-left-color: #d97706;">
+        <h3 id="stat-kelas-xi-ink" style="color: #d97706;">0</h3>
+        <p>Kelas XI Inklusi</p>
+      </div>
+    </div>
 
-      <!-- I. K3 -->
-      <div class="section-title">I. CHECKLIST K3, PERSIAPAN & KELENGKAPAN ALAT</div>
-      <table class="table-doc">
+    <!-- TABEL LOG MONITORING -->
+    <div class="table-responsive">
+      <table>
         <thead>
           <tr>
-            <th width="8%">No</th>
-            <th>Aspek K3, APD & Persiapan Alat</th>
-            <th width="12%">Ya</th>
-            <th width="12%">Tidak</th>
+            <th>Waktu Masuk</th>
+            <th>Kategori</th>
+            <th>Nama Siswa</th>
+            <th>Kelas</th>
+            <th>Ruang</th>
+            <th>Mata Pelajaran</th>
+            <th>Status Ujian</th>
+            <th>Status Kamera</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="text-center">1</td>
-            <td>Menggunakan pakaian kerja (wearpack), sepatu keselamatan, dan kacamata pelindung.</td>
-            <td class="text-center"><input type="radio" name="k3_1" value="Ya" required></td>
-            <td class="text-center"><input type="radio" name="k3_1" value="Tidak"></td>
-          </tr>
-          <tr>
-            <td class="text-center">2</td>
-            <td>Memastikan sepeda motor dalam kondisi aman (standar tengah kokoh) dan mesin mati.</td>
-            <td class="text-center"><input type="radio" name="k3_2" value="Ya" required></td>
-            <td class="text-center"><input type="radio" name="k3_2" value="Tidak"></td>
-          </tr>
-          <tr>
-            <td class="text-center">3</td>
-            <td>Menyiapkan area kerja yang bersih, terang, serta wadah komponen agar tidak hilang/tertukar.</td>
-            <td class="text-center"><input type="radio" name="k3_3" value="Ya" required></td>
-            <td class="text-center"><input type="radio" name="k3_3" value="Tidak"></td>
-          </tr>
-          <tr>
-            <td class="text-center">4</td>
-            <td>Mempersiapkan kunci sok/ring/pas, ratchet, torque wrench, dan SST pengunci pulley dengan benar.</td>
-            <td class="text-center"><input type="radio" name="k3_4" value="Ya" required></td>
-            <td class="text-center"><input type="radio" name="k3_4" value="Tidak"></td>
-          </tr>
-          <tr>
-            <td class="text-center">5</td>
-            <td>Memastikan cairan pembersih, kompresor, dan kain lap siap digunakan tanpa mencemari V-belt.</td>
-            <td class="text-center"><input type="radio" name="k3_5" value="Ya" required></td>
-            <td class="text-center"><input type="radio" name="k3_5" value="Tidak"></td>
-          </tr>
+        <tbody id="table-body">
+          <tr><td colspan="8" class="loading-info">Memuat data monitoring...</td></tr>
         </tbody>
       </table>
-
-      <!-- II. IDENTIFIKASI KOMPONEN -->
-      <div class="section-title">II. LEMBAR IDENTIFIKASI KOMPONEN CVT</div>
-      <table class="table-doc">
-        <thead>
-          <tr>
-            <th width="8%">No</th>
-            <th width="25%">Nama Komponen</th>
-            <th width="35%">Fungsi Utama</th>
-            <th>Prinsip Kerja / Keterangan Singkat</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-center">1</td>
-            <td>Drive Pulley (Pulley Depan)</td>
-            <td><input type="text" id="id_fn_1" required></td>
-            <td><input type="text" id="id_ket_1" required></td>
-          </tr>
-          <tr>
-            <td class="text-center">2</td>
-            <td>Driven Pulley (Pulley Belakang)</td>
-            <td><input type="text" id="id_fn_2" required></td>
-            <td><input type="text" id="id_ket_2" required></td>
-          </tr>
-          <tr>
-            <td class="text-center">3</td>
-            <td>V-Belt</td>
-            <td><input type="text" id="id_fn_3" required></td>
-            <td><input type="text" id="id_ket_3" required></td>
-          </tr>
-          <tr>
-            <td class="text-center">4</td>
-            <td>Roller (Pemberat)</td>
-            <td><input type="text" id="id_fn_4" required></td>
-            <td><input type="text" id="id_ket_4" required></td>
-          </tr>
-          <tr>
-            <td class="text-center">5</td>
-            <td>Kampas Ganda & Clutch Housing</td>
-            <td><input type="text" id="id_fn_5" required></td>
-            <td><input type="text" id="id_ket_5" required></td>
-          </tr>
-          <tr>
-            <td class="text-center">6</td>
-            <td>Rasio / Gigi Reduksi</td>
-            <td><input type="text" id="id_fn_6" required></td>
-            <td><input type="text" id="id_ket_6" required></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- III. HASIL PEMERIKSAAN & PENGUKURAN -->
-      <div class="section-title">III. LEMBAR HASIL PEMERIKSAAN & PENGUKURAN KOMPONEN</div>
-      <table class="table-doc">
-        <thead>
-          <tr>
-            <th width="6%">No</th>
-            <th width="20%">Komponen</th>
-            <th width="24%">Kondisi Visual</th>
-            <th width="20%">Hasil Ukur</th>
-            <th width="30%">Tindakan Perbaikan</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 6 Baris Komponen -->
-          <script>
-            const kompList = ['V-Belt', 'Roller', 'Drive Pulley', 'Driven Pulley', 'Kampas Ganda', 'Cover CVT'];
-            document.write(kompList.map((k, i) => `
-              <tr>
-                <td class="text-center">${i+1}</td>
-                <td><b>${k}</b></td>
-                <td>
-                  <label><input type="radio" name="vis_${i+1}" value="Layak" required> Layak</label><br>
-                  <label><input type="radio" name="vis_${i+1}" value="Rawat"> Rawat</label><br>
-                  <label><input type="radio" name="vis_${i+1}" value="Ganti"> Ganti</label>
-                </td>
-                <td><input type="text" id="uk_${i+1}" placeholder="mm / kondisi" required></td>
-                <td><input type="text" id="tnd_${i+1}" placeholder="Tindakan..." required></td>
-              </tr>
-            `).join(''));
-          </script>
-        </tbody>
-      </table>
-
-      <!-- IV. PROSEDUR KERJA OVERHAUL CVT -->
-      <div class="section-title">IV. CHECKLIST PROSEDUR KERJA OVERHAUL CVT</div>
-      <table class="table-doc">
-        <thead>
-          <tr>
-            <th width="8%">No</th>
-            <th>Langkah Prosedur Kerja</th>
-            <th width="12%">Ya</th>
-            <th width="12%">Tidak</th>
-          </tr>
-        </thead>
-        <tbody>
-          <script>
-            const prosList = [
-              "Melepas cover CVT secara berurutan dan aman sesuai posisi baut.",
-              "Melepas mur pengikat drive pulley menggunakan SST (holder/pengunci) yang sesuai.",
-              "Melepas komponen drive pulley, V-belt, dan driven pulley secara sistematis.",
-              "Membersihkan seluruh komponen dari kotoran/debu menggunakan cairan pembersih.",
-              "Memeriksa keausan, keretakan V-belt, keausan roller, serta goresan pulley.",
-              "Melakukan pengukuran komponen (lebar V-belt, diameter roller/pulley).",
-              "Menentukan tindakan perawatan (greasing) atau penggantian komponen aus.",
-              "Merakit kembali komponen CVT sesuai urutan yang benar.",
-              "Pengencangan mur pulley menggunakan kunci momen (torque wrench) sesuai spesifikasi.",
-              "Pemeriksaan akhir (free play, fungsi putaran, test run) dan pelaporan."
-            ];
-            document.write(prosList.map((p, i) => `
-              <tr>
-                <td class="text-center">${i+1}</td>
-                <td>${p}</td>
-                <td class="text-center"><input type="radio" name="pros_${i+1}" value="Ya" required></td>
-                <td class="text-center"><input type="radio" name="pros_${i+1}" value="Tidak"></td>
-              </tr>
-            `).join(''));
-          </script>
-        </tbody>
-      </table>
-
-      <!-- V. ANALISIS HAKIKAT PRAKTIK -->
-      <div class="section-title">V. ANALISIS HASIL PRAKTIK (JAWABAN SINGKAT)</div>
-      
-      <div class="question-block">
-        1. Komponen apa yang ditemukan dalam kondisi tidak sesuai/aus? Jelaskan hasil pemeriksaannya.
-        <textarea id="ans1" rows="3" required></textarea>
-      </div>
-      <div class="question-block">
-        2. Apa tindakan perawatan atau penggantian yang dilakukan? Jelaskan alasannya.
-        <textarea id="ans2" rows="3" required></textarea>
-      </div>
-      <div class="question-block">
-        3. Jika setelah perakitan terjadi getaran atau suara tidak normal, apa kemungkinan penyebabnya?
-        <textarea id="ans3" rows="3" required></textarea>
-      </div>
-      <div class="question-block">
-        4. Bagaimana cara memastikan hasil perakitan CVT sudah sesuai prosedur dan spesifikasi pabrikan?
-        <textarea id="ans4" rows="3" required></textarea>
-      </div>
-      <div class="question-block">
-        5. Tuliskan kesimpulan singkat hasil overhaul CVT yang telah dilakukan.
-        <textarea id="ans5" rows="3" required></textarea>
-      </div>
-
-      <!-- TTD -->
-      <div class="ttd-container">
-        Purwokerto, <span id="lblTglTTD"></span><br>
-        Peserta Didik,<br>
-        <canvas id="canvasTTD" width="220" height="110"></canvas><br>
-        <button type="button" class="btn-clear" onclick="resetTTD()">Hapus TTD</button><br><br>
-        <b><span id="lblNamaTTD">(.......................)</span></b>
-      </div>
-      <div class="clear-fix"></div>
-
-      <button type="submit" id="btnSubmit" class="btn-submit">Kirim & Simpan Lembar Pengamatan Lengkap</button>
-    </form>
+    </div>
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwMsCqOyez6EaiUT4h2sTmV2PgeClX9KomS9_ufq_Nar_iYARuiefJCdKr9qMZD53vtbA/exec";
+    const URL_KELAS_X      = "https://script.google.com/macros/s/AKfycbz7IDkbDuKrdwhjvYmi2x5avfx3voNUOaPmFtU3112xeNZ6n61v_abKAmyLxlkIPjvT/exec";
+    const URL_KELAS_XI     = "https://script.google.com/macros/s/AKfycbzVVI1lQHXR9YohwEWD1tTvmtQ-UdSXH7tcEi95849zb5kNuPZbFOogdnVXfTLGgdR1/exec";
+    const URL_KELAS_X_INK  = "https://script.google.com/macros/s/AKfycbwED2KT8qEGQ-tloK8NUoD3pfwnEvgFqb-p8a8Hafrr06z2aGDvmwRFHSyuIMD89kBdWQ/exec";
+    const URL_KELAS_XI_INK = "https://script.google.com/macros/s/AKfycbyuEZ8LGBTPpXQSt-boaT8x591Q0upjLK_b0EhaBroVLicIHlUUaQBFiKhc4hdY0P_q/exec";
 
-    let currentSiswa = null;
-    let canvas, ctx, drawing = false;
+    window.onload = function() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById("filter-tanggal").value = `${yyyy}-${mm}-${dd}`;
+      
+      // Kosongkan filter jam agar seluruh data tanggal tersebut tampil
+      document.getElementById("filter-waktu").value = "";
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnLogin');
-      btn.disabled = true;
-      btn.innerText = "Memeriksa...";
+      muatDataMonitoring();
+    };
 
-      const noTes = document.getElementById('inputNoTes').value;
-      const password = document.getElementById('inputPassword').value;
+    function muatDataMonitoring() {
+      const btnRefresh = document.getElementById("btn-refresh-data");
+      const tbody = document.getElementById("table-body");
+      
+      btnRefresh.disabled = true;
+      btnRefresh.innerText = "⏳ Memuat...";
+      tbody.innerHTML = `<tr><td colspan="8" class="loading-info">Memuat data monitoring dari 4 database...</td></tr>`;
 
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "login", noTes: noTes, password: password })
-        }).then(r => r.json());
+      const tingkat = document.getElementById("filter-tingkat").value;
+      const ruang = document.getElementById("filter-ruang").value;
+      const tanggal = document.getElementById("filter-tanggal").value;
+      const waktuMulai = document.getElementById("filter-waktu").value;
 
-        if (res.success) {
-          currentSiswa = res.siswa;
-          showDocumentView();
-        } else {
-          alert(res.message);
-        }
-      } catch (err) {
-        alert("Gagal terhubung: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Masuk Sistem";
+      const promises = [];
+
+      if (tingkat === "SEMUA" || tingkat === "X") {
+        promises.push(
+          fetch(`${URL_KELAS_X}?action=getMonitoring&ruang=${encodeURIComponent(ruang)}&tanggal=${encodeURIComponent(tanggal)}&waktuMulai=${encodeURIComponent(waktuMulai)}`)
+            .then(res => res.json())
+            .then(res => (res.data || []).map(item => ({ ...item, tingkat: "X" })))
+            .catch(() => [])
+        );
       }
-    }
 
-    function showDocumentView() {
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('docView').classList.remove('hidden');
-
-      const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-      document.getElementById('lblNama').innerText = currentSiswa.nama;
-      document.getElementById('lblNoTes').innerText = currentSiswa.noTes;
-      document.getElementById('lblKelas').innerText = currentSiswa.kelas;
-      document.getElementById('lblTanggal').innerText = today;
-      document.getElementById('lblTglTTD').innerText = today;
-      document.getElementById('lblNamaTTD').innerText = currentSiswa.nama;
-
-      initCanvas();
-    }
-
-    function initCanvas() {
-      canvas = document.getElementById('canvasTTD');
-      ctx = canvas.getContext('2d');
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#000000";
-
-      canvas.addEventListener('mousedown', sDraw);
-      canvas.addEventListener('mousemove', mDraw);
-      canvas.addEventListener('mouseup', eDraw);
-
-      canvas.addEventListener('touchstart', (e) => { sDraw(e.touches[0]); e.preventDefault(); });
-      canvas.addEventListener('touchmove', (e) => { mDraw(e.touches[0]); e.preventDefault(); });
-      canvas.addEventListener('touchend', eDraw);
-    }
-
-    function sDraw(e) {
-      drawing = true;
-      const rect = canvas.getBoundingClientRect();
-      ctx.beginPath();
-      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-    }
-    function mDraw(e) {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-      ctx.stroke();
-    }
-    function eDraw() { drawing = false; }
-    function resetTTD() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-    function getRadioVal(name) {
-      const el = document.querySelector(`input[name="${name}"]:checked`);
-      return el ? el.value : "";
-    }
-
-    async function handleSubmit(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmit');
-      btn.disabled = true;
-      btn.innerText = "Menyimpan ke Spreadsheet...";
-
-      // Koleksi K3
-      const k3Data = Array.from({length: 5}, (_, i) => getRadioVal(`k3_${i+1}`));
-
-      // Koleksi Identifikasi
-      const idData = Array.from({length: 6}, (_, i) => ({
-        fungsi: document.getElementById(`id_fn_${i+1}`).value,
-        ket: document.getElementById(`id_ket_${i+1}`).value
-      }));
-
-      // Koleksi Pengukuran
-      const ukurData = Array.from({length: 6}, (_, i) => ({
-        visual: getRadioVal(`vis_${i+1}`),
-        hasilUkur: document.getElementById(`uk_${i+1}`).value,
-        tindakan: document.getElementById(`tnd_${i+1}`).value
-      }));
-
-      // Koleksi Prosedur
-      const prosData = Array.from({length: 10}, (_, i) => getRadioVal(`pros_${i+1}`));
-
-      const payload = {
-        action: "submit",
-        payload: {
-          noTes: currentSiswa.noTes,
-          nama: currentSiswa.nama,
-          kelas: currentSiswa.kelas,
-          k3: k3Data,
-          identifikasi: idData,
-          pengukuran: ukurData,
-          prosedur: prosData,
-          ans1: document.getElementById('ans1').value,
-          ans2: document.getElementById('ans2').value,
-          ans3: document.getElementById('ans3').value,
-          ans4: document.getElementById('ans4').value,
-          ans5: document.getElementById('ans5').value,
-          ttdBase64: canvas.toDataURL("image/png")
-        }
-      };
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
-
-        alert(res.message);
-        if (res.success) location.reload();
-      } catch (err) {
-        alert("Gagal menyimpan data: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Kirim & Simpan Lembar Pengamatan Lengkap";
+      if (tingkat === "SEMUA" || tingkat === "XI") {
+        promises.push(
+          fetch(`${URL_KELAS_XI}?action=getMonitoring&ruang=${encodeURIComponent(ruang)}&tanggal=${encodeURIComponent(tanggal)}&waktuMulai=${encodeURIComponent(waktuMulai)}`)
+            .then(res => res.json())
+            .then(res => (res.data || []).map(item => ({ ...item, tingkat: "XI" })))
+            .catch(() => [])
+        );
       }
+
+      if (tingkat === "SEMUA" || tingkat === "X_INK") {
+        promises.push(
+          fetch(`${URL_KELAS_X_INK}?action=getMonitoring&ruang=${encodeURIComponent(ruang)}&tanggal=${encodeURIComponent(tanggal)}&waktuMulai=${encodeURIComponent(waktuMulai)}`)
+            .then(res => res.json())
+            .then(res => (res.data || []).map(item => ({ ...item, tingkat: "X_INK" })))
+            .catch(() => [])
+        );
+      }
+
+      if (tingkat === "SEMUA" || tingkat === "XI_INK") {
+        promises.push(
+          fetch(`${URL_KELAS_XI_INK}?action=getMonitoring&ruang=${encodeURIComponent(ruang)}&tanggal=${encodeURIComponent(tanggal)}&waktuMulai=${encodeURIComponent(waktuMulai)}`)
+            .then(res => res.json())
+            .then(res => (res.data || []).map(item => ({ ...item, tingkat: "XI_INK" })))
+            .catch(() => [])
+        );
+      }
+
+      Promise.all(promises).then(results => {
+        let gabungan = [];
+        results.forEach(arr => { gabungan = gabungan.concat(arr); });
+
+        gabungan.sort((a, b) => parseDateCustom(b.waktu) - parseDateCustom(a.waktu));
+
+        tampilkanData(gabungan);
+        
+        btnRefresh.disabled = false;
+        btnRefresh.innerText = "🔄 Refresh Data";
+      }).catch(() => {
+        btnRefresh.disabled = false;
+        btnRefresh.innerText = "🔄 Refresh Data";
+      });
+    }
+
+    function parseDateCustom(dateStr) {
+      if (!dateStr) return new Date(0);
+      var parts = dateStr.toString().split(" ");
+      if (parts.length === 2) {
+        var dateParts = parts[0].split("/");
+        var timeParts = parts[1].split(":");
+        if (dateParts.length === 3 && timeParts.length >= 2) {
+          return new Date(
+            parseInt(dateParts[2], 10),
+            parseInt(dateParts[1], 10) - 1,
+            parseInt(dateParts[0], 10),
+            parseInt(timeParts[0], 10),
+            parseInt(timeParts[1], 10),
+            timeParts[2] ? parseInt(timeParts[2], 10) : 0
+          );
+        }
+      }
+      var d = new Date(dateStr);
+      return isNaN(d.getTime()) ? new Date(0) : d;
+    }
+
+    function tampilkanData(data) {
+      const tbody = document.getElementById("table-body");
+      tbody.innerHTML = "";
+
+      let countX = 0, countXI = 0, countXInk = 0, countXIInk = 0;
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-info">Belum ada aktivitas siswa untuk filter ini.</td></tr>`;
+      } else {
+        data.forEach(item => {
+          let badgeTingkat = "";
+          
+          if (item.tingkat === "X") {
+            countX++;
+            badgeTingkat = `<span class="badge-tingkat badge-x">Kelas X</span>`;
+          } else if (item.tingkat === "XI") {
+            countXI++;
+            badgeTingkat = `<span class="badge-tingkat badge-xi">Kelas XI</span>`;
+          } else if (item.tingkat === "X_INK") {
+            countXInk++;
+            badgeTingkat = `<span class="badge-tingkat badge-x-ink">X Inklusi</span>`;
+          } else if (item.tingkat === "XI_INK") {
+            countXIInk++;
+            badgeTingkat = `<span class="badge-tingkat badge-xi-ink">XI Inklusi</span>`;
+          }
+
+          let kameraStr = item.kamera || "KAMERA DITOLAK / ERROR";
+          let badgeKamera = "";
+          if (kameraStr.includes("AKTIF") || kameraStr.includes("ON")) {
+            badgeKamera = `<span class="badge-kamera-on">📷 AKTIF</span>`;
+          } else {
+            badgeKamera = `<span class="badge-kamera-off">🚫 NONAKTIF / BLOK</span>`;
+          }
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${item.waktu}</td>
+            <td>${badgeTingkat}</td>
+            <td><strong>${item.nama}</strong></td>
+            <td>${item.kelas}</td>
+            <td>${item.ruang}</td>
+            <td>${item.mapel ? item.mapel.replace(/_/g, ' ') : '-'}</td>
+            <td><span class="badge-status">✅ ${item.status}</span></td>
+            <td>${badgeKamera}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      document.getElementById("stat-total").innerText = data.length;
+      document.getElementById("stat-kelas-x").innerText = countX;
+      document.getElementById("stat-kelas-xi").innerText = countXI;
+      document.getElementById("stat-kelas-x-ink").innerText = countXInk;
+      document.getElementById("stat-kelas-xi-ink").innerText = countXIInk;
+      
+      const now = new Date();
+      document.getElementById("last-update").innerText = "Terakhir Diperbarui: " + now.toLocaleTimeString('id-ID');
     }
   </script>
+
 </body>
 </html>
