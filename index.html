@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lembar Pengamatan Overhaul CVT</title>
+  <title>Lembar Pengamatan Overhaul CVT — SMK Diponegoro 1 Purwokerto</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -104,6 +104,7 @@
       cursor: pointer;
     }
 
+    /* LOGIN BOX */
     .login-box {
       max-width: 380px;
       margin: 50px auto;
@@ -112,14 +113,29 @@
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    .login-box input {
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
       width: 100%;
       padding: 10px;
-      margin: 8px 0 16px 0;
+      margin: 8px 0 4px 0;
       box-sizing: border-box;
       border: 1px solid #cbd5e0;
       border-radius: 4px;
     }
+    .show-password-opt {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: #4a5568;
+      cursor: pointer;
+      user-select: none;
+    }
+    .show-password-opt input[type="checkbox"] {
+      margin-right: 6px;
+      cursor: pointer;
+    }
+
     .hidden { display: none; }
     .clear-fix { clear: both; }
     .text-center { text-align: center; }
@@ -127,7 +143,7 @@
 </head>
 <body>
 
-  <!-- LOGIN -->
+  <!-- LOGIN SISWA -->
   <div id="loginView" class="login-box">
     <h3 style="text-align: center; margin-top:0;">LOGIN SISWA</h3>
     <p style="text-align: center; font-size:12px; color:#4a5568;">Lembar Pengamatan Overhaul CVT</p>
@@ -138,11 +154,17 @@
       <label style="font-size:13px; font-weight:bold;">Password:</label>
       <input type="password" id="inputPassword" required placeholder="Masukkan Password">
       
+      <!-- CHECKBOX LIHAT PASSWORD -->
+      <div class="show-password-opt">
+        <input type="checkbox" id="togglePassword" onclick="togglePassView()">
+        <label for="togglePassword" style="cursor:pointer;">Lihat Password</label>
+      </div>
+
       <button type="submit" id="btnLogin" class="btn-submit">Masuk Sistem</button>
     </form>
   </div>
 
-  <!-- DOKUMEN -->
+  <!-- DOKUMEN FISIK -->
   <div id="docView" class="paper hidden">
     
     <div class="header-title">
@@ -278,7 +300,6 @@
           </tr>
         </thead>
         <tbody>
-          <!-- 6 Baris Komponen -->
           <script>
             const kompList = ['V-Belt', 'Roller', 'Drive Pulley', 'Driven Pulley', 'Kampas Ganda', 'Cover CVT'];
             document.write(kompList.map((k, i) => `
@@ -359,7 +380,7 @@
         <textarea id="ans5" rows="3" required></textarea>
       </div>
 
-      <!-- TTD -->
+      <!-- TTD SISWA -->
       <div class="ttd-container">
         Purwokerto, <span id="lblTglTTD"></span><br>
         Peserta Didik,<br>
@@ -378,6 +399,11 @@
 
     let currentSiswa = null;
     let canvas, ctx, drawing = false;
+
+    function togglePassView() {
+      const pInput = document.getElementById('inputPassword');
+      pInput.type = pInput.type === "password" ? "text" : "password";
+    }
 
     async function handleLogin(e) {
       e.preventDefault();
@@ -434,23 +460,29 @@
       canvas.addEventListener('mousemove', mDraw);
       canvas.addEventListener('mouseup', eDraw);
 
-      canvas.addEventListener('touchstart', (e) => { sDraw(e.touches[0]); e.preventDefault(); });
-      canvas.addEventListener('touchmove', (e) => { mDraw(e.touches[0]); e.preventDefault(); });
+      canvas.addEventListener('touchstart', (e) => { sDraw(e.touches[0]); e.preventDefault(); }, {passive: false});
+      canvas.addEventListener('touchmove', (e) => { mDraw(e.touches[0]); e.preventDefault(); }, {passive: false});
       canvas.addEventListener('touchend', eDraw);
     }
 
     function sDraw(e) {
       drawing = true;
       const rect = canvas.getBoundingClientRect();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
       ctx.beginPath();
-      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.moveTo(clientX - rect.left, clientY - rect.top);
     }
+
     function mDraw(e) {
       if (!drawing) return;
       const rect = canvas.getBoundingClientRect();
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+      ctx.lineTo(clientX - rect.left, clientY - rect.top);
       ctx.stroke();
     }
+
     function eDraw() { drawing = false; }
     function resetTTD() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
@@ -465,23 +497,19 @@
       btn.disabled = true;
       btn.innerText = "Menyimpan ke Spreadsheet...";
 
-      // Koleksi K3
       const k3Data = Array.from({length: 5}, (_, i) => getRadioVal(`k3_${i+1}`));
 
-      // Koleksi Identifikasi
       const idData = Array.from({length: 6}, (_, i) => ({
         fungsi: document.getElementById(`id_fn_${i+1}`).value,
         ket: document.getElementById(`id_ket_${i+1}`).value
       }));
 
-      // Koleksi Pengukuran
       const ukurData = Array.from({length: 6}, (_, i) => ({
         visual: getRadioVal(`vis_${i+1}`),
         hasilUkur: document.getElementById(`uk_${i+1}`).value,
         tindakan: document.getElementById(`tnd_${i+1}`).value
       }));
 
-      // Koleksi Prosedur
       const prosData = Array.from({length: 10}, (_, i) => getRadioVal(`pros_${i+1}`));
 
       const payload = {
