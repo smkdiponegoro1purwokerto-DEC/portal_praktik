@@ -157,11 +157,10 @@
       }
       .print-paper { box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
       .no-print { display: none !important; }
-      .page-break { page-break-before: always !important; break-before: page !important; }
       .avoid-break { page-break-inside: avoid !important; break-inside: avoid !important; }
     }
 
-    /* FORMAT KOP & TABEL DOKUMEN CETAK DENGAN BINDING TEKS PENUH */
+    /* FORMAT KOP & TABEL DOKUMEN CETAK DENGAN PEMBAGIAN HALAMAN OTOMATIS */
     .header-title { text-align: center; font-weight: bold; margin-bottom: 12px; }
     .header-title h3 { margin: 2px 0; font-size: 15px; }
     .header-title h4 { margin: 2px 0; font-size: 13px; text-transform: uppercase; }
@@ -171,20 +170,32 @@
       width: 100%; 
       border-collapse: collapse; 
       margin-bottom: 12px; 
-      table-layout: fixed; /* MENGUNCI LEBAR TABEL */
+      table-layout: fixed; 
+      page-break-inside: auto; /* PERMUKAAN HALAMAN ALAMI */
+    }
+    table.table-doc tr {
+      page-break-inside: avoid; /* JANGAN POTONG BARIS TABEL DI TENGAH */
+      page-break-after: auto;
     }
     table.table-doc th, table.table-doc td { 
       border: 1px solid #000; 
       padding: 5px 6px; 
       font-size: 10.5px; 
       vertical-align: middle; 
-      word-wrap: break-word; /* SUPAYA TEKS PANJANG OTOMATIS TURUN */
+      word-wrap: break-word; 
       overflow-wrap: break-word;
       word-break: break-word;
     }
     table.table-doc th { background-color: #f1f5f9; text-align: center; }
     .text-center { text-align: center; }
-    .section-title { font-weight: bold; font-size: 11.5px; margin-top: 12px; margin-bottom: 4px; }
+    
+    .section-title { 
+      font-weight: bold; 
+      font-size: 11.5px; 
+      margin-top: 14px; 
+      margin-bottom: 4px; 
+      page-break-after: avoid; /* JUDUL SELALU MENEMPEL PADA TABEL/ISIAN DI BAWAHNYA */
+    }
     .question-block { margin-bottom: 8px; font-size: 10.5px; page-break-inside: avoid; }
     
     .ans-box { 
@@ -197,7 +208,7 @@
       word-wrap: break-word; 
       overflow-wrap: break-word;
       word-break: break-word;
-      white-space: pre-wrap; /* MENJAGA ENTER/PARAGRAF SISWA */
+      white-space: pre-wrap; 
     }
     
     .ttd-container { margin-top: 15px; float: right; width: 220px; text-align: center; font-size: 10.5px; page-break-inside: avoid; }
@@ -514,9 +525,7 @@
           </tbody>
         </table>
 
-        <div class="page-break"></div>
-
-        <div class="section-title" style="margin-top:0;">IV. CHECKLIST PROSEDUR KERJA OVERHAUL CVT</div>
+        <div class="section-title">IV. CHECKLIST PROSEDUR KERJA OVERHAUL CVT</div>
         <table class="table-doc">
           <thead>
             <tr><th width="6%">No</th><th width="70%">Langkah Prosedur Kerja</th><th width="12%">Ya</th><th width="12%">Tidak</th></tr>
