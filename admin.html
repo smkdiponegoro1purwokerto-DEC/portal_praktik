@@ -161,18 +161,45 @@
       .avoid-break { page-break-inside: avoid !important; break-inside: avoid !important; }
     }
 
+    /* FORMAT KOP & TABEL DOKUMEN CETAK DENGAN BINDING TEKS PENUH */
     .header-title { text-align: center; font-weight: bold; margin-bottom: 12px; }
     .header-title h3 { margin: 2px 0; font-size: 15px; }
     .header-title h4 { margin: 2px 0; font-size: 13px; text-transform: uppercase; }
     .header-title p { margin: 2px 0; font-size: 10px; font-style: italic; }
 
-    table.table-doc { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-    table.table-doc th, table.table-doc td { border: 1px solid #000; padding: 4px 6px; font-size: 10.5px; vertical-align: middle; }
+    table.table-doc { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-bottom: 12px; 
+      table-layout: fixed; /* MENGUNCI LEBAR TABEL */
+    }
+    table.table-doc th, table.table-doc td { 
+      border: 1px solid #000; 
+      padding: 5px 6px; 
+      font-size: 10.5px; 
+      vertical-align: middle; 
+      word-wrap: break-word; /* SUPAYA TEKS PANJANG OTOMATIS TURUN */
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
     table.table-doc th { background-color: #f1f5f9; text-align: center; }
     .text-center { text-align: center; }
     .section-title { font-weight: bold; font-size: 11.5px; margin-top: 12px; margin-bottom: 4px; }
     .question-block { margin-bottom: 8px; font-size: 10.5px; page-break-inside: avoid; }
-    .ans-box { border: 1px solid #000; padding: 5px; font-size: 10.5px; background: #fafafa; min-height: 28px; margin-top: 2px; }
+    
+    .ans-box { 
+      border: 1px solid #000; 
+      padding: 6px; 
+      font-size: 10.5px; 
+      background: #fafafa; 
+      min-height: 28px; 
+      margin-top: 2px; 
+      word-wrap: break-word; 
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-wrap; /* MENJAGA ENTER/PARAGRAF SISWA */
+    }
+    
     .ttd-container { margin-top: 15px; float: right; width: 220px; text-align: center; font-size: 10.5px; page-break-inside: avoid; }
     .clear-fix { clear: both; }
   </style>
@@ -226,7 +253,7 @@
         <tr>
           <th width="5%">No</th>
           <th width="15%">Waktu Kirim</th>
-          <th width="12%">No. Tes</th>
+          <th width="12%">Username</th>
           <th width="25%">Nama Siswa</th>
           <th width="15%">Kelas</th>
           <th width="18%" style="text-align:center;">Aksi</th>
@@ -264,7 +291,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Set input tanggal otomatis ke hari ini (Format YYYY-MM-DD)
       const todayStr = new Date().toISOString().split('T')[0];
       document.getElementById('filterDate').value = todayStr;
 
@@ -338,7 +364,6 @@
       }
     }
 
-    // FUNGSI RENDER TABEL SESUAI FILTER TANGGAL
     function renderFilteredData() {
       const tbody = document.getElementById('tableBody');
       const selectedDate = document.getElementById('filterDate').value;
@@ -348,7 +373,6 @@
       if (selectedDate) {
         currentFilteredList = responDataList.filter(item => {
           const itemDate = new Date(item.timestamp);
-          // Format YYYY-MM-DD lokal
           const year = itemDate.getFullYear();
           const month = String(itemDate.getMonth() + 1).padStart(2, '0');
           const day = String(itemDate.getDate()).padStart(2, '0');
@@ -421,7 +445,7 @@
           <tr>
             <td width="18%"><b>Nama Peserta:</b></td>
             <td width="32%">${d.nama}</td>
-            <td width="18%"><b>No. Tes:</b></td>
+            <td width="18%"><b>Username:</b></td>
             <td width="32%">${d.noTes}</td>
           </tr>
           <tr>
@@ -435,7 +459,7 @@
         <div class="section-title">I. CHECKLIST K3, PERSIAPAN & KELENGKAPAN ALAT</div>
         <table class="table-doc">
           <thead>
-            <tr><th width="6%">No</th><th>Aspek K3 & APD</th><th width="10%">Ya</th><th width="10%">Tidak</th></tr>
+            <tr><th width="6%">No</th><th width="70%">Aspek K3 & APD</th><th width="12%">Ya</th><th width="12%">Tidak</th></tr>
           </thead>
           <tbody>
             ${[
@@ -458,7 +482,7 @@
         <div class="section-title">II. LEMBAR IDENTIFIKASI KOMPONEN CVT</div>
         <table class="table-doc">
           <thead>
-            <tr><th width="6%">No</th><th width="25%">Nama Komponen</th><th width="35%">Fungsi Utama</th><th>Prinsip Kerja / Keterangan</th></tr>
+            <tr><th width="6%">No</th><th width="24%">Nama Komponen</th><th width="35%">Fungsi Utama</th><th width="35%">Prinsip Kerja / Keterangan</th></tr>
           </thead>
           <tbody>
             ${['Drive Pulley', 'Driven Pulley', 'V-Belt', 'Roller', 'Kampas Ganda & Clutch', 'Gigi Reduksi'].map((k, i) => `
@@ -475,7 +499,7 @@
         <div class="section-title">III. HASIL PEMERIKSAAN & PENGUKURAN</div>
         <table class="table-doc">
           <thead>
-            <tr><th width="6%">No</th><th width="20%">Komponen</th><th width="18%">Visual</th><th width="20%">Hasil Ukur</th><th>Tindakan Perbaikan</th></tr>
+            <tr><th width="6%">No</th><th width="20%">Komponen</th><th width="18%">Visual</th><th width="26%">Hasil Ukur</th><th width="30%">Tindakan Perbaikan</th></tr>
           </thead>
           <tbody>
             ${kompList.map((k, i) => `
@@ -495,7 +519,7 @@
         <div class="section-title" style="margin-top:0;">IV. CHECKLIST PROSEDUR KERJA OVERHAUL CVT</div>
         <table class="table-doc">
           <thead>
-            <tr><th width="6%">No</th><th>Langkah Prosedur Kerja</th><th width="10%">Ya</th><th width="10%">Tidak</th></tr>
+            <tr><th width="6%">No</th><th width="70%">Langkah Prosedur Kerja</th><th width="12%">Ya</th><th width="12%">Tidak</th></tr>
           </thead>
           <tbody>
             ${prosList.map((p, i) => `
@@ -510,11 +534,11 @@
         </table>
 
         <div class="section-title">V. ANALISIS HASIL PRAKTIK (JAWABAN SINGKAT)</div>
-        <div class="question-block">1. Komponen aus/tidak sesuai:<div class="ans-box">${d.ans1}</div></div>
-        <div class="question-block">2. Tindakan perawatan/penggantian:<div class="ans-box">${d.ans2}</div></div>
-        <div class="question-block">3. Penyebab getaran/suara tidak normal:<div class="ans-box">${d.ans3}</div></div>
-        <div class="question-block">4. Cara memastikan kesesuaian prosedur:<div class="ans-box">${d.ans4}</div></div>
-        <div class="question-block">5. Kesimpulan overhaul CVT:<div class="ans-box">${d.ans5}</div></div>
+        <div class="question-block">1. Komponen aus/tidak sesuai:<div class="ans-box">${d.ans1 || '-'}</div></div>
+        <div class="question-block">2. Tindakan perawatan/penggantian:<div class="ans-box">${d.ans2 || '-'}</div></div>
+        <div class="question-block">3. Penyebab getaran/suara tidak normal:<div class="ans-box">${d.ans3 || '-'}</div></div>
+        <div class="question-block">4. Cara memastikan kesesuaian prosedur:<div class="ans-box">${d.ans4 || '-'}</div></div>
+        <div class="question-block">5. Kesimpulan overhaul CVT:<div class="ans-box">${d.ans5 || '-'}</div></div>
 
         <div class="ttd-container avoid-break">
           Purwokerto, ${tglFormatted}<br>
